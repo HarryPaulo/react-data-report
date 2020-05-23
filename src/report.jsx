@@ -15,12 +15,13 @@ export default class Report extends React.Component {
       generating: false,
       pages: [],
       itemsPerPage: 8,
-      pageFormat: 'l',
+      pageFormat: 'p',
       pageSize: 'a4'
     };
     
     this._setInitialState   = this._setInitialState.bind(this);
     this._parseData         = this._parseData.bind(this);
+    this._parseDataIni      = this._parseDataIni.bind(this);
     this._updatePreview     = this._updatePreview.bind(this);
     this.generateReport     = this.generateReport.bind(this);
     this.updateItemsPerPage = this.updateItemsPerPage.bind(this);
@@ -29,17 +30,29 @@ export default class Report extends React.Component {
   }
 
   _setInitialState(props) {
-    this.setState(
-      {
-        pages: this._parseData(props.data, props.opening, props.closing),
-        itemsPerPage: this.props.itemsPerPage || 8,
-        pageFormat: this.props.pageFormat || "p",
-        pageSize: this.props.pageSize || "letter",
-      },
-      () => {
-        this._updatePreview();
-      }
-    );
+    this.setState({
+      pages: this._parseDataIni(props.data, props.opening, props.closing, this.props.itemsPerPage, this.props.pageFormat, this.props.pageSize),
+      itemsPerPage: this.props.itemsPerPage || 8,
+      pageFormat: this.props.pageFormat || "p",
+      pageSize: this.props.pageSize || "letter",
+    });
+  }
+
+  _parseDataIni(data, opening, closing, itemsPerPage, pageFormat, pageSize) {
+    const total = data.length;
+    if (total == 0) return null;
+
+    const step      = parseInt(itemsPerPage);
+    const pages     = Math.floor(total / step) + ((total % step == 0) ? 0 : 1 );
+    const className = pageSize + ' ' + (pageFormat == 'p' ? 'portrait' : 'landscape');
+
+    let content = [];
+    for (let pg = 0; pg < pages; pg++) {
+      const slicedData = data.slice(pg * step, (pg * step) + step);
+      content.push((<ReportPage className={ className } key={'page_' + pg} data={slicedData} opening={pg == 0 ? opening : null} closing={pg == pages - 1 ? closing : null} />));
+    }
+
+    return content;
   }
 
   _parseData(data, opening, closing) {
@@ -63,7 +76,7 @@ export default class Report extends React.Component {
     if (this.update) clearTimeout(this.update);
     this.update = setTimeout(() => {
       this.setState({pages: this._parseData(this.props.data, this.props.opening, this.props.closing)});
-    }, 500);
+    }, 2500);
   }
 
   componentDidMount() {
@@ -114,6 +127,7 @@ export default class Report extends React.Component {
   }
 
   updatePageFormat(value) {
+    alert(value);
     this.setState({pageFormat: value});
     this._updatePreview();
   }

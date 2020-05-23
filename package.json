@@ -1,6 +1,6 @@
 {
-  "name": "@weknow/react-data-report",
-  "version": "1.1.4",
+  "name": "@harrypaulo/react-data-report",
+  "version": "1.2.5",
   "description": "ReactJS component to preview data and export it as PDF file.",
   "keywords": [
     "ReactJS",
@@ -13,7 +13,7 @@
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/weknowinc/react-data-report"
+    "url": "https://github.com/HarryPaulo/react-data-report"
   },
   "main": "build/report.js",
   "peerDependencies": {

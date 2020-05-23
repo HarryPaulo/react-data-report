@@ -12794,25 +12794,40 @@ function(module, exports, __webpack_require__) {
                 generating: !1,
                 pages: [],
                 itemsPerPage: 8,
-                pageFormat: "l",
+                pageFormat: "p",
                 pageSize: "a4"
             }, _this._setInitialState = _this._setInitialState.bind(_this), _this._parseData = _this._parseData.bind(_this), 
-            _this._updatePreview = _this._updatePreview.bind(_this), _this.generateReport = _this.generateReport.bind(_this), 
-            _this.updateItemsPerPage = _this.updateItemsPerPage.bind(_this), _this.updatePageFormat = _this.updatePageFormat.bind(_this), 
-            _this.updatePageSize = _this.updatePageSize.bind(_this), _this;
+            _this._parseDataIni = _this._parseDataIni.bind(_this), _this._updatePreview = _this._updatePreview.bind(_this), 
+            _this.generateReport = _this.generateReport.bind(_this), _this.updateItemsPerPage = _this.updateItemsPerPage.bind(_this), 
+            _this.updatePageFormat = _this.updatePageFormat.bind(_this), _this.updatePageSize = _this.updatePageSize.bind(_this), 
+            _this;
         }
         return _inherits(Report, _React$Component), _createClass(Report, [ {
             key: "_setInitialState",
             value: function(props) {
-                var _this2 = this;
                 this.setState({
-                    pages: this._parseData(props.data, props.opening, props.closing),
+                    pages: this._parseDataIni(props.data, props.opening, props.closing, this.props.itemsPerPage, this.props.pageFormat, this.props.pageSize),
                     itemsPerPage: this.props.itemsPerPage || 8,
                     pageFormat: this.props.pageFormat || "p",
                     pageSize: this.props.pageSize || "letter"
-                }, function() {
-                    _this2._updatePreview();
                 });
+            }
+        }, {
+            key: "_parseDataIni",
+            value: function(data, opening, closing, itemsPerPage, pageFormat, pageSize) {
+                var total = data.length;
+                if (0 == total) return null;
+                for (var step = parseInt(itemsPerPage), pages = Math.floor(total / step) + (total % step == 0 ? 0 : 1), className = pageSize + " " + ("p" == pageFormat ? "portrait" : "landscape"), content = [], pg = 0; pg < pages; pg++) {
+                    var slicedData = data.slice(pg * step, pg * step + step);
+                    content.push(_react2.default.createElement(_reportPage2.default, {
+                        className: className,
+                        key: "page_" + pg,
+                        data: slicedData,
+                        opening: 0 == pg ? opening : null,
+                        closing: pg == pages - 1 ? closing : null
+                    }));
+                }
+                return content;
             }
         }, {
             key: "_parseData",
@@ -12834,12 +12849,12 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "_updatePreview",
             value: function() {
-                var _this3 = this;
+                var _this2 = this;
                 this.update && clearTimeout(this.update), this.update = setTimeout(function() {
-                    _this3.setState({
-                        pages: _this3._parseData(_this3.props.data, _this3.props.opening, _this3.props.closing)
+                    _this2.setState({
+                        pages: _this2._parseData(_this2.props.data, _this2.props.opening, _this2.props.closing)
                     });
-                }, 500);
+                }, 2500);
             }
         }, {
             key: "componentDidMount",
@@ -12854,7 +12869,7 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "generateReport",
             value: function() {
-                var _this4 = this;
+                var _this3 = this;
                 if (this.divToPrint) {
                     this.setState({
                         generating: !0
@@ -12876,11 +12891,11 @@ function(module, exports, __webpack_require__) {
                                 w: 216,
                                 h: 356
                             }
-                        }, w = "p" == _this4.state.pageFormat ? size[_this4.state.pageSize].w : size[_this4.state.pageSize].h, h = "p" == _this4.state.pageFormat ? size[_this4.state.pageSize].h : size[_this4.state.pageSize].w;
+                        }, w = "p" == _this3.state.pageFormat ? size[_this3.state.pageSize].w : size[_this3.state.pageSize].h, h = "p" == _this3.state.pageFormat ? size[_this3.state.pageSize].h : size[_this3.state.pageSize].w;
                         images.forEach(function(image, index) {
                             var pageData = image.toDataURL("image/png", 1);
-                            pdf.addImage(pageData, "PNG", 0, 0, w, h, "", "FAST"), index + 1 < images.length && pdf.addPage(_this4.state.pageSize, _this4.state.pageFormat);
-                        }), _this4.setState({
+                            pdf.addImage(pageData, "PNG", 0, 0, w, h, "", "FAST"), index + 1 < images.length && pdf.addPage(_this3.state.pageSize, _this3.state.pageFormat);
+                        }), _this3.setState({
                             generating: !1
                         }), pdf.save("report.pdf");
                     }).catch(function(e) {
@@ -12898,7 +12913,7 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "updatePageFormat",
             value: function(value) {
-                this.setState({
+                alert(value), this.setState({
                     pageFormat: value
                 }), this._updatePreview();
             }
@@ -12912,7 +12927,7 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "render",
             value: function() {
-                var _this5 = this;
+                var _this4 = this;
                 return _react2.default.createElement("div", {
                     className: "report"
                 }, _react2.default.createElement("div", {
@@ -12928,7 +12943,7 @@ function(module, exports, __webpack_require__) {
                     min: "1",
                     step: "1",
                     onChange: function(event) {
-                        return _this5.updateItemsPerPage(event.target.value);
+                        return _this4.updateItemsPerPage(event.target.value);
                     },
                     value: this.state.itemsPerPage
                 })), _react2.default.createElement("div", {
@@ -12939,7 +12954,7 @@ function(module, exports, __webpack_require__) {
                     id: "pageFormat",
                     name: "pageFormat",
                     onChange: function(event) {
-                        return _this5.updatePageFormat(event.target.value);
+                        return _this4.updatePageFormat(event.target.value);
                     },
                     value: this.state.pageFormat
                 }, _react2.default.createElement("option", {
@@ -12954,7 +12969,7 @@ function(module, exports, __webpack_require__) {
                     id: "pageSize",
                     name: "pageSize",
                     onChange: function(event) {
-                        return _this5.updatePageSize(event.target.value);
+                        return _this4.updatePageSize(event.target.value);
                     },
                     value: this.state.pageSize
                 }, _react2.default.createElement("option", {
@@ -12972,12 +12987,12 @@ function(module, exports, __webpack_require__) {
                     type: "button",
                     className: "report__generator-button",
                     onClick: function() {
-                        return _this5.generateReport();
+                        return _this4.generateReport();
                     }
                 }, _i18nReact2.default.translate("report.controlPanel.generatePdf")))), _react2.default.createElement("div", {
                     id: "divToPrint",
                     ref: function(elm) {
-                        return _this5.divToPrint = elm;
+                        return _this4.divToPrint = elm;
                     },
                     className: "report__preview-container"
                 }, this.state.pages));

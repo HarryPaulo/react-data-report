@@ -13,6 +13,7 @@ To run the test:
 1. Clone the repository
 2. Execute in console:
 ```BASH
+Linux
 cd test
 npm install
 cd node_modules
@@ -20,6 +21,18 @@ ln -s ../../ react-data-report
 cd ..
 npm start
 ```
+
+```BASH
+Windows
+cd test
+npm install
+cd node_modules
+mklink /d comp C:\react-data-report
+cd ..
+npm start
+```
+
+mklink /d 
 
 ### General Usage
 
