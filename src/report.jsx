@@ -29,12 +29,17 @@ export default class Report extends React.Component {
   }
 
   _setInitialState(props) {
-    this.setState({
-      pages: this._parseData(props.data, props.opening, props.closing),
-      itemsPerPage: this.props.itemsPerPage || 8,
-      pageFormat: this.props.pageFormat || 'p',
-      pageSize: this.props.pageSize || 'letter'
-    });
+    this.setState(
+      {
+        pages: this._parseData(props.data, props.opening, props.closing),
+        itemsPerPage: this.props.itemsPerPage || 8,
+        pageFormat: this.props.pageFormat || "p",
+        pageSize: this.props.pageSize || "letter",
+      },
+      () => {
+        this._updatePreview();
+      }
+    );
   }
 
   _parseData(data, opening, closing) {
