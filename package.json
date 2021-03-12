@@ -30,7 +30,7 @@
     "css-loader": "^0.28.8",
     "html2canvas": "^1.0.0-alpha.9",
     "i18n-react": "^0.1.0",
-    "jspdf": "^1.3.5",
+    "jspdf": "^2.3.1",
     "moment": "^2.20.1",
     "node-sass": "^4.7.2",
     "react": "^15.6.2",
